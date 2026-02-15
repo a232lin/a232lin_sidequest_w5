@@ -23,6 +23,11 @@ class WorldLevel {
           [255, 160, 122], // coral
         ]),
       });
+      this.bigSmiley = {
+        x: this.w / 2 - 570,
+        y: this.h / 2 - 200,
+        size: 100,
+      };
       // Rare smiley faces scattered across the world
       this.smileys = [];
       for (let i = 0; i < 25; i++) {
@@ -61,6 +66,7 @@ class WorldLevel {
 
     this.drawFlowers();
     this.drawSmileys(player);
+    this.drawBigSmileyBear();
   }
 
   drawFlowers() {
@@ -93,6 +99,55 @@ class WorldLevel {
       pop();
     }
   }
+
+  drawBigSmileyBear() {
+    const s = this.bigSmiley;
+    push();
+    translate(s.x, s.y);
+
+    // Face
+    noStroke();
+    fill(255, 200, 0);
+    ellipse(0, 0, s.size);
+
+    // Bear ears
+    fill(255, 200, 0);
+    ellipse(-s.size * 0.35, -s.size * 0.4, s.size * 0.3);
+    ellipse(s.size * 0.35, -s.size * 0.4, s.size * 0.3);
+    fill(255, 150, 150);
+    ellipse(-s.size * 0.35, -s.size * 0.4, s.size * 0.15);
+    ellipse(s.size * 0.35, -s.size * 0.4, s.size * 0.15);
+
+    // Eyes
+    fill(0);
+    ellipse(-s.size * 0.15, -s.size * 0.15, s.size * 0.15, s.size * 0.25);
+    ellipse(s.size * 0.15, -s.size * 0.15, s.size * 0.15, s.size * 0.25);
+
+    // Smile with teeth
+    stroke(0);
+    strokeWeight(3);
+    noFill();
+    arc(0, s.size * 0.1, s.size * 0.5, s.size * 0.3, 0, PI);
+
+    endShape();
+    pop();
+
+    // Speech bubble
+    push();
+    let bubbleX = s.x + s.size * 0.6;
+    let bubbleY = s.y - s.size * 0.5;
+    fill(255);
+    stroke(0);
+    strokeWeight(2);
+    rect(bubbleX, bubbleY, 120, 50, 10);
+    fill(0);
+    noStroke();
+    textSize(16);
+    textAlign(CENTER, CENTER);
+    text("HI THERE!!!", bubbleX + 60, bubbleY + 25);
+    pop();
+  }
+
   drawSmileys(player) {
     for (let s of this.smileys) {
       // Reveal if player is nearby
