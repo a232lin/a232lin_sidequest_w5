@@ -72,14 +72,17 @@ function draw() {
   level.drawWorld();
   player.draw();
   pop();
-  drawUI(); // draws instructions
+
+  drawUI(); // existing instructions
+  drawEndSign(player); // <-- Add this here
 }
+
 function drawUI() {
   noStroke();
 
   // Soft transparent background panel
   fill(255, 255, 255, 180);
-  rect(20, 20, 310, 70, 12);
+  rect(20, 20, 330, 70, 12);
 
   fill(60);
   textSize(14);
@@ -88,12 +91,40 @@ function drawUI() {
   text("Use WASD / Arrow Keys to Move Around >.>", 35, 45);
 
   textSize(14);
-  text("Flower Field Adventure!", 35, 70);
+  text("Explore the flower field and meet more smileys!", 35, 70);
 }
 
 function keyPressed() {
   if (key === "r" || key === "R") {
     const start = worldData.playerStart;
     player = new Player(start.x, start.y, start.speed);
+  }
+}
+
+function drawEndSign(player) {
+  // Trigger when player is within the last ~20% of width/height
+  const nearRight = player.x > level.w * 0.8; // shows sooner
+  const nearBottom = player.y > level.h * 0.8; // shows sooner
+
+  if (nearRight || nearBottom) {
+    push();
+    resetMatrix(); // fixed on screen
+
+    fill(255, 230, 180, 240);
+    stroke(150, 100, 0);
+    strokeWeight(2);
+
+    // Move to bottom
+    let rectY = height - 80; // top of rectangle
+    let textY = height - 55; // text inside rectangle
+
+    rect(width / 2 - 180, rectY, 360, 50, 10); // rectangle
+    fill(0);
+    noStroke();
+    textSize(16);
+    textAlign(CENTER, CENTER);
+    text("Almost at the end of the world! Go back!", width / 2, textY);
+
+    pop();
   }
 }

@@ -3,6 +3,9 @@ class Player {
     this.x = x;
     this.y = y;
     this.speed = speed;
+
+    // Bubble trail
+    this.bubbles = [];
   }
 
   updateInput() {
@@ -13,29 +16,58 @@ class Player {
   }
 
   draw() {
+    this.updateBubbles();
+
+    // Draw bubbles first
+    this.drawBubbles();
+
+    // Draw player on top
     push();
     translate(this.x, this.y);
 
-    // Body
     noStroke();
-    fill(255, 165, 0); // orange
+    fill("255, 165, 0"); // orange body
     ellipse(0, 0, 30);
 
-    // Eyes (oval)
+    // Eyes
     fill(255);
-    ellipse(-6, -5, 6, 10); // left
-    ellipse(6, -5, 6, 10); // right
+    ellipse(-6, -5, 6, 10);
+    ellipse(6, -5, 6, 10);
 
     fill(0);
-    ellipse(-6, -5, 3, 6); // left pupil
-    ellipse(6, -5, 3, 6); // right pupil
+    ellipse(-6, -5, 3, 6);
+    ellipse(6, -5, 3, 6);
 
-    // Smiling mouth
+    // Smile
     noFill();
     stroke(0);
     strokeWeight(2);
-    arc(0, 3, 15, 10, 0, PI); // smile
+    arc(0, 3, 15, 10, 0, PI);
 
     pop();
+  }
+
+  updateBubbles() {
+    // Add new bubble at player position
+    this.bubbles.push({
+      x: this.x,
+      y: this.y,
+      alpha: 200,
+      size: random(4, 10),
+    });
+
+    // Reduce alpha and remove old bubbles
+    for (let b of this.bubbles) {
+      b.alpha -= 3; // fade speed
+    }
+    this.bubbles = this.bubbles.filter((b) => b.alpha > 0); // keep visible bubbles
+  }
+
+  drawBubbles() {
+    noStroke();
+    for (let b of this.bubbles) {
+      fill(200, 220, 255, b.alpha);
+      ellipse(b.x, b.y, b.size);
+    }
   }
 }
