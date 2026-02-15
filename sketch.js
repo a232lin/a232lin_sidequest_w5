@@ -102,11 +102,15 @@ function keyPressed() {
 }
 
 function drawEndSign(player) {
-  // Trigger when player is within the last ~20% of width/height
-  const nearRight = player.x > level.w * 0.8; // shows sooner
-  const nearBottom = player.y > level.h * 0.8; // shows sooner
+  // Trigger when player is within the last ~10% of all sides
+  const margin = 300; // distance from edge to trigger sign
 
-  if (nearRight || nearBottom) {
+  const nearLeft = player.x < margin;
+  const nearRight = player.x > level.w - margin;
+  const nearTop = player.y < margin;
+  const nearBottom = player.y > level.h - margin;
+
+  if (nearLeft || nearRight || nearTop || nearBottom) {
     push();
     resetMatrix(); // fixed on screen
 
@@ -114,11 +118,11 @@ function drawEndSign(player) {
     stroke(150, 100, 0);
     strokeWeight(2);
 
-    // Move to bottom
-    let rectY = height - 80; // top of rectangle
-    let textY = height - 55; // text inside rectangle
+    // Bottom of the screen
+    let rectY = height - 80;
+    let textY = height - 55;
 
-    rect(width / 2 - 180, rectY, 360, 50, 10); // rectangle
+    rect(width / 2 - 180, rectY, 360, 50, 10);
     fill(0);
     noStroke();
     textSize(16);
