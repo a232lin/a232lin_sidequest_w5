@@ -26,7 +26,7 @@ let camX = 0;
 let camY = 0;
 
 function preload() {
-  worldData = loadJSON("world.json"); // load JSON before setup [web:122]
+  worldData = loadJSON("world.json");
 }
 
 function setup() {
@@ -36,7 +36,7 @@ function setup() {
 
   level = new WorldLevel(worldData);
 
-  const start = worldData.playerStart ?? { x: 300, y: 300, speed: 3 };
+  const start = worldData.playerStart;
   player = new Player(start.x, start.y, start.speed);
 
   camX = player.x - width / 2;
@@ -50,35 +50,50 @@ function draw() {
   player.x = constrain(player.x, 0, level.w);
   player.y = constrain(player.y, 0, level.h);
 
-  // Target camera (center on player)
+  // Target camera
   let targetX = player.x - width / 2;
   let targetY = player.y - height / 2;
 
-  // Clamp target camera safely
   const maxCamX = max(0, level.w - width);
   const maxCamY = max(0, level.h - height);
+
   targetX = constrain(targetX, 0, maxCamX);
   targetY = constrain(targetY, 0, maxCamY);
 
-  // Smooth follow using the JSON knob
-  const camLerp = level.camLerp; // ← data-driven now
-  camX = lerp(camX, targetX, camLerp);
-  camY = lerp(camY, targetY, camLerp);
+  camX = lerp(camX, targetX, level.camLerp);
+  camY = lerp(camY, targetY, level.camLerp);
 
+  // Draw sky
   level.drawBackground();
 
+  // Draw world
   push();
   translate(-camX, -camY);
   level.drawWorld();
   player.draw();
   pop();
+  drawUI(); // draws instructions
+}
+function drawUI() {
+  noStroke();
 
-  level.drawHUD(player, camX, camY);
+  // Soft transparent background panel
+  fill(255, 255, 255, 180);
+  rect(20, 20, 310, 70, 12);
+
+  fill(60);
+  textSize(14);
+  textAlign(LEFT);
+
+  text("Use WASD / Arrow Keys to Move Around >.>", 35, 45);
+
+  textSize(14);
+  text("Flower Field Adventure!", 35, 70);
 }
 
 function keyPressed() {
   if (key === "r" || key === "R") {
-    const start = worldData.playerStart ?? { x: 300, y: 300, speed: 3 };
+    const start = worldData.playerStart;
     player = new Player(start.x, start.y, start.speed);
   }
 }
